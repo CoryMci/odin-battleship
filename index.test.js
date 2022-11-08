@@ -157,3 +157,19 @@ test('recieveAttack correctly updates ships', ()=> {
 
     expect(dingy.hits).toBe(2)
 })
+
+test('isDefeated returns false by default', ()=> {
+    const testBoard = gameBoard()
+    expect(testBoard.isDefeated()).toBe(false)
+})
+
+test('validTargets displays valid targets correctly', ()=> {
+    const testBoard = gameBoard()
+    expect(testBoard.validTargets()[0]).toEqual(['1','1'])
+})
+
+test('validTargets displays valid targets correctly', ()=> {
+    const testBoard = gameBoard()
+    testBoard.placeShip(ship(2),1,1)
+    expect(testBoard.validTargets()[0]).toEqual(['1','1'])
+})

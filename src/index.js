@@ -44,6 +44,25 @@ const gameBoard = function(){
 
   const ships = [carrier, battleship, cruiser, submarine, destroyer]
 
+  const isDefeated = function(){
+    return (ships.every((eachShip)=>{
+      return eachShip.isSunk
+    }))
+  }
+
+  const validTargets = function(){
+    let validArray = []
+    for (const xCoord in board) {
+      for (const yCoord in board[xCoord]){
+        if (!(board[xCoord][yCoord] == 'hit' || board[xCoord][yCoord] == 'miss')){
+          const validTarget = [xCoord, yCoord]
+          validArray.push(validTarget)
+        }
+      }
+    }
+    return validArray
+  }
+
   const placeShip = function(ship, xCoord, yCoord, horizontal=true){
     const shipLength = ship.length
     if (xCoord <= 0 || yCoord <= 0 || xCoord > 10 || yCoord > 10) {
@@ -79,19 +98,124 @@ const gameBoard = function(){
   const receiveAttack = function(xCoord, yCoord) {
     if (board[xCoord][yCoord] == null) {
       board[xCoord][yCoord] = 'miss'
-    } else {
+    } else if (board[xCoord][yCoord] == 'hit' || board[xCoord][yCoord] == 'miss'){
+      return 'invalid'
+    } else{ 
       board[xCoord][yCoord].hit()
       board[xCoord][yCoord] = 'hit'
     }
   }
 
   return {
-    board,
+    get board(){
+      return board
+    },
     ships,
     placeShip,
-    receiveAttack
+    receiveAttack,
+    isDefeated,
+    validTargets
   }
 }
 
+const main = function(){
+  const Player = gameBoard()
+  const Computer = gameBoard()
 
-export {ship, gameBoard}
+  Player.placeShip(Player.ships[0], 1, 1)
+  Player.placeShip(Player.ships[1], 1, 3)
+  Player.placeShip(Player.ships[2], 1, 5)
+  Player.placeShip(Player.ships[3], 1, 7)
+  Player.placeShip(Player.ships[4], 1, 9)
+
+  Computer.placeShip(Computer.ships[0], 1, 1)
+  Computer.placeShip(Computer.ships[1], 1, 3)
+  Computer.placeShip(Computer.ships[2], 1, 5)
+  Computer.placeShip(Computer.ships[3], 1, 7)
+  Computer.placeShip(Computer.ships[4], 1, 9)
+
+  const move = function(x,y){
+      if (!(Computer.receiveAttack(x,y) == 'invalid')){
+        Playermove = !Playermove
+      }
+    
+    reloadBoards()
+  }
+
+  
+
+  return {
+    move,
+    get Player() {
+      return Player
+    },
+    get Computer() {
+      return Computer
+    }
+  }
+}
+
+let game = main()
+
+// const dom = function(){
+//   let playerBoard = document.querySelector('.player');
+//   let computerBoard = document.querySelector('.computer');
+
+//   for (let y = 1; y <= 10; y++) {
+//     const bar = document.createElement('div')
+//     bar.classList.add('bar')
+//     for (let x = 1; x <= 10; x++){
+//       let box = document.createElement('div');
+//       box.setAttribute('data-x', x)
+//       box.setAttribute('data-y', y)
+//       box.classList.add('box')
+//       bar.append(box)
+//     }
+//     playerBoard.prepend(bar)
+//   }
+
+//   for (let y = 1; y <= 10; y++) {
+//     const bar = document.createElement('div')
+//     bar.classList.add('bar')
+//     for (let x = 1; x <= 10; x++){
+//       let box = document.createElement('div');
+//       box.setAttribute('data-x', x)
+//       box.setAttribute('data-y', y)
+//       box.classList.add('box')
+//       box.addEventListener('click',()=>{
+//         game.move(x, y)
+//       })
+//       bar.append(box)
+//     }
+//     computerBoard.prepend(bar)
+//   }
+
+//   const reloadBoards = function(){
+//     const computerDom = document.querySelector('.computer')
+//     for (const xCoord in game.Computer.board) {
+//       for (const yCoord in game.Computer.board[xCoord]){
+//         if (game.Computer.board[xCoord][yCoord] == 'hit' || game.Computer.board[xCoord][yCoord] == 'miss'){
+//           const domBox = computerDom.querySelector(`[data-x="${xCoord}"][data-y="${yCoord}"]`)
+//           let newClass = game.Computer.board[xCoord][yCoord]
+//           domBox.classList.add(`${newClass}`)
+//         }
+//       }
+//     }
+//     const playerDom = document.querySelector('.player')
+//     for (const xCoord in game.Player.board) {
+//       for (const yCoord in game.Player.board[xCoord]){
+//         if (game.Player.board[xCoord][yCoord] == 'hit' || game.Player.board[xCoord][yCoord] == 'miss'){
+//           const domBox = playerDom.querySelector(`[data-x="${xCoord}"][data-y="${yCoord}"]`)
+//           let newClass = game.Player.board[xCoord][yCoord]
+//           domBox.classList.add(`${newClass}`)
+//         }
+//       }
+//     }
+//   }
+// }
+
+// let newBoard = dom()
+
+
+
+export {ship, gameBoard, main}

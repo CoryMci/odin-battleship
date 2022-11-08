@@ -10,6 +10,11 @@ module.exports = {
       devtool: 'inline-source-map',
       devServer: {
         static: './dist',
+        hot: true,
+    devMiddleware: {
+      publicPath: '/dist/',
+      writeToDisk: true,
+   },    
       },
       plugins: [
         new HtmlWebpackPlugin({
