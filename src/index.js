@@ -225,6 +225,7 @@ const gameBoard = function () {
     const possibleTargets = validTargets();
     const randomCoords =
       possibleTargets[Math.floor(Math.random() * (possibleTargets.length - 1))];
+    console.log(randomCoords[0], randomCoords[1]);
     receiveAttack(randomCoords[0], randomCoords[1]);
   };
 
@@ -318,7 +319,21 @@ const dom = function () {
     computerBoard.prepend(bar);
   }
 
+  const resetGame = function () {
+    game = new main();
+  };
+
   const reloadBoards = function () {
+    document.removeEventListener("click", resetGame);
+    const alertDom = document.querySelector(".alerts");
+    if (game.Player.isDefeated()) {
+      alertDom.textContent = "Player 1 is defeated!";
+      document.addEventListener("click", resetGame);
+    } else if (game.Computer.isDefeated()) {
+      alertDom.textContent = "Computer is defeated!";
+      document.addEventListener("click", resetGame);
+    }
+
     const computerDom = document.querySelector(".computer");
     for (const xCoord in game.Computer.board) {
       for (const yCoord in game.Computer.board[xCoord]) {
